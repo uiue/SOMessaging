@@ -28,19 +28,9 @@
 
 - (CGSize)usedSizeForMaxWidth:(CGFloat)width withFont:(UIFont *)font
 {
-    NSTextStorage *textStorage = [[NSTextStorage alloc]
-                                  initWithString:self];
-    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize: CGSizeMake(width, MAXFLOAT)];
-    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
-    [layoutManager addTextContainer:textContainer];
-    [textStorage addLayoutManager:layoutManager];
-    [textStorage addAttribute:NSFontAttributeName value:font
-                        range:NSMakeRange(0, [textStorage length])];
-    [textContainer setLineFragmentPadding:0.0];
-
-    [layoutManager glyphRangeForTextContainer:textContainer];
-    CGRect frame = [layoutManager usedRectForTextContainer:textContainer];
-    return CGSizeMake(ceilf(frame.size.width),ceilf(frame.size.height));
+    NSDictionary *attribute = @{NSFontAttributeName: font};
+    CGSize size = [self boundingRectWithSize:CGSizeMake(width, 0) options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attribute context:nil].size;
+    return size;
 }
 
 - (CGSize)usedSizeForMaxWidth:(CGFloat)width withAttributes:(NSDictionary *)attributes
